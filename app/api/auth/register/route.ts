@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
+import bcrypt from "bcryptjs"
 
 //function to handle POST request. the function name must be POST to handle post request.
 export async function POST(request: NextRequest) {
@@ -26,9 +27,11 @@ export async function POST(request: NextRequest) {
             )
         }
 
+        const encryptedPassword = bcrypt.hash(password, 10)
+
         await User.create({
             email,
-            password
+            encryptedPassword
         })
 
         return NextResponse.json(
