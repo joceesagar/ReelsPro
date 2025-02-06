@@ -81,7 +81,6 @@ export default function FileUpload({
         <div className="space-y-2">
             <IKUpload
                 fileName={fileType === "video" ? "video" : "image"}
-
                 validateFile={validateFile}
                 onError={onError}
                 onSuccess={handleSuccess}
