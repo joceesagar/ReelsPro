@@ -12,7 +12,7 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    if (session.status === "unauthenticated" || session.status === "loading") {
+    if (session.status === "unauthenticated") {
       router.replace('/register')
     }
     else {

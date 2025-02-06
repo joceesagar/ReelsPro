@@ -27,11 +27,11 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const encryptedPassword = bcrypt.hash(password, 10)
+        const encryptedPassword = await bcrypt.hash(password, 10)
 
         await User.create({
             email,
-            encryptedPassword
+            password: encryptedPassword
         })
 
         return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         )
     } catch (error) {
         return NextResponse.json(
-            { error: "Failed to Register User" },
+            { error: `Failed to Register User ${error}` },
             { status: 500 }
         )
     }

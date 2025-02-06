@@ -87,5 +87,5 @@ export const authOptions: NextAuthOptions = {
 // Authentication Flow:
 // User visits /login (a custom page you created).
 // User submits the login form.
-// You send a POST request to /api/auth/callback/credentials.
+// You send a request to await SignIn("credentials", {your credentials}). this SignIn function is given by next-auth/react. we don't have to fetch request here.
 // If successful, NextAuth will log the user in and redirect them to the appropriate page.

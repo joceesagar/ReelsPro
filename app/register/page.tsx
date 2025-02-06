@@ -14,26 +14,50 @@ function Register() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setError("") //Reset error if there was any previous
+        setError("") // Reset previous error
         setLoading(true)
+
+        // Email validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setError("Invalid email format");
+            setLoading(false);
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters long");
+            setLoading(false);
+            return;
+        }
+
         if (password !== confirmPassword) {
-            setError("Your Password doesnot match")
+            setError("Your Password does not match")
+            setLoading(false)
+            return // Stops execution
         }
         try {
             const res = await fetch("/api/auth/register", {
                 method: "POST",
-                headers: { "COntent-Type": "application/json" },
+                headers: { "Content-Type": "application/json" }, // ✅ Correct header key
                 body: JSON.stringify({ email, password })
             })
-            const data = res.json()
+            const data = await res.json() // ✅ Await response
+
+            console.log(data)
+
             if (!res.ok) {
-                setError("Registration failed")
+                setError(data.message || "Registration failed") // ✅ Show actual error message from API
+                setLoading(false)
+                return // ✅ Stop execution
             }
             toast.success("User Registered Successfully")
+            router.push("/login") // ✅ Navigate only on success
 
-            router.push("/login") //navigate to login
         } catch (error) {
-            throw new Error(`Something went wrong: ${error}`)
+            setError(`Something went wrong: ${error}`)
+        } finally {
+            setLoading(false)
         }
     }
     return (
@@ -43,8 +67,6 @@ function Register() {
                     <h2 className="text-3xl font-bold text-center ">Welcome to ReelsPro</h2>
                     <h2 className="text-2xl font-bold text-center text-slate-800 ">SIGN UP</h2>
                 </div>
-
-                {error && <p className="text-red-500">{error}</p>}
                 <form onSubmit={handleSubmit}>
                     {/* Email Field */}
                     <div className='flex flex-col gap-5'>
@@ -93,12 +115,13 @@ function Register() {
                         </label>
                         {/* Submit Button */}
                         <div className='w-full text-center'>
-                            <button className="btn btn-wide">Sign Up</button>
+                            <button className="btn btn-wide" disabled={loading}>Sign Up</button>
                         </div>
                         <div className='w-full flex items-center justify-center gap-2'>
                             <span>Already have an account?</span>
                             <Link href='/login' className='font-extrabold'>Login</Link>
                         </div>
+                        {error && <p className="text-red-500 text-center font-bold">{error}</p>}
                     </div>
                 </form>
             </div>
