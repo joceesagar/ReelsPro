@@ -21,6 +21,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions) //next-auth gives session to verify whether user is authenticated or not
+        console.log(`SESSION: ${session}`)
         if (!session) {
             return NextResponse.json(
                 { error: "Unauthorized" },
@@ -28,12 +29,12 @@ export async function POST(request: NextRequest) {
         }
         await connectToDatabase()
         const body: IVideo = await request.json()
+        console.log(`API BODY: ${body}`)
 
         if (
             !body.title ||
             !body.description ||
-            !body.videoUrl ||
-            !body.thumbnailUrl
+            !body.videoUrl
         ) {
             return NextResponse.json(
                 { error: "Missing require field" },

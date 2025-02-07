@@ -2,7 +2,7 @@
 
 import { IVideo } from "@/models/Video"
 
-export type VideoFormData = Omit<IVideo, "_id">
+export type VideoFormData = Omit<IVideo, "_id"> //omit menas remove _id from IVideo keepind all same
 
 type FetchOptions = {
     method?: "GET" | "POST" | "PUT" | "CREATE",
@@ -17,15 +17,17 @@ class ApiClient {
     ): Promise<T> {
         const { method = "GET", body, headers = {} } = options
         const defaultHeaders = {
-            "Content-Type": "/application/json",
+            "Content-Type": "application/json",
             ...headers
         }
-
+        console.log(`BODY: ${body}`)
         const response = await fetch(`/api${endpoint}`, { //we are not using this here because this will give above function fetch not the JS fetch
             method,
             headers: defaultHeaders,
             body: body ? JSON.stringify(body) : undefined
         })
+
+        console.log(`RESPONSE ERROR ${response.status}`)
 
         if (!response.ok) {
             throw new Error(await response.text())
@@ -44,7 +46,7 @@ class ApiClient {
     async createVideo(videoData: VideoFormData) {
         return this.fetch("/videos", {
             method: "POST",
-            body: videoData
+            body: JSON.stringify(videoData)
         })
     }
 }
