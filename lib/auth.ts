@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
         }
     },
     pages: {
-        signIn: "/login",
+        signIn: "/login",  //whenever user have no token it will redirect to this page
         error: "/login"
     },
     session: {

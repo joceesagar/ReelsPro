@@ -12,20 +12,15 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    if (session.status === "unauthenticated") {
-      router.replace('/register')
-    }
-    else {
-      const fetchVideo = async () => {
-        try {
-          const data = await apiClient.getVideos()
-          setVideos(data)
-        } catch (error) {
-          console.error("Error Fetching videos", error)
-        }
+    const fetchVideo = async () => {
+      try {
+        const data = await apiClient.getVideos()
+        setVideos(data)
+      } catch (error) {
+        console.error("Error Fetching videos", error)
       }
-      fetchVideo()
     }
+    fetchVideo()
   }, [])
 
   console.log(session)

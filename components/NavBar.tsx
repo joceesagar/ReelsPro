@@ -1,17 +1,34 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+
 
 function NavBar() {
-    const session = useSession() //returns true if logged in otherwise false
+    const [currentSession, setCurrentSession] = useState<boolean>(false)
+    const session = useSession()
+
+    useEffect(() => {
+        if (session.status === "unauthenticated" || session.status === "loading") {
+            setCurrentSession(false)
+        } else {
+            setCurrentSession(true)
+        }
+    }, [session])
+    console.log(session)
+
+    const handleLogout = () => {
+        signOut()
+
+    }
     return (
         <div className="navbar bg-base-100 px-[100px]">
             <div className="flex-1">
                 <Link className="btn btn-ghost text-2xl font-extrabold text-white" href="/">ReelsPro</Link>
             </div>
-            <div className="flex-none gap-2">
+            {currentSession && <div className="flex-none gap-2">
                 <div className="form-control">
                     <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
                 </div>
@@ -35,10 +52,10 @@ function NavBar() {
                             </a>
                         </li>
                         <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
+                        <li><Link onClick={handleLogout} href={"/login"}>Logout</Link></li>
                     </ul>
                 </div>
-            </div>
+            </div>}
         </div>
     )
 }
